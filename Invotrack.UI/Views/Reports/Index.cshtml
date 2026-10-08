@@ -1,0 +1,289 @@
+﻿@model Invotrack.Application.DTOs.ReportsDashboardViewModel
+@{
+    ViewData["Title"] = "مركز التقارير والتحليلات الموحد";
+}
+
+<!-- مكتبة Chart.js للمخططات البيانية -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .report-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 16px;
+        border: 1px solid #f1f5f9;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+        .report-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
+        }
+
+    .kpi-card {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 16px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+
+    .icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+</style>
+
+<div dir="rtl">
+    <!-- هيدر الشاشة -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-0">مركز التقارير والتحليلات المتقدم</h3>
+            <small class="text-muted">نظرة شاملة ومؤشرات أداء المخزون والتقييم المالي والعمليات</small>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="FinancialValuation" class="btn btn-primary btn-sm fw-bold shadow-sm">
+                <i class="bi bi-cash-stack me-1"></i> تقرير التقييم المالي
+            </a>
+            <a asp-action="ExportCenter" class="btn btn-outline-success btn-sm fw-bold shadow-sm">
+                <i class="bi bi-file-earmark-excel me-1"></i> مركز التصدير (Excel / PDF)
+            </a>
+        </div>
+    </div>
+
+    <!-- 1️⃣ كروت التنقل السريعة المصححة والمنفصلة تماماً -->
+    <div class="row g-3 mb-4">
+        <!-- 1. المخزون الحالي -->
+        <div class="col-md">
+            <a asp-action="CurrentStockReport" class="report-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-primary-subtle text-primary">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-1">المخزون الحالي</h6>
+                <small class="text-muted d-block fs-7">أرصدة وتقييم الأصناف المتاحة</small>
+            </a>
+        </div>
+
+        <!-- 2. تقرير المخزون الوارد -->
+        <div class="col-md">
+            <a asp-action="StockInReport" class="report-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-success-subtle text-success">
+                        <i class="bi bi-box-arrow-in-down"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-1">المخزون الوارد</h6>
+                <small class="text-muted d-block fs-7">تقرير أذونات التوريد والاستلام</small>
+            </a>
+        </div>
+
+        <!-- 3. تقرير المخزون الصادر -->
+        <div class="col-md">
+            <a asp-action="StockOutReport" class="report-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-danger-subtle text-danger">
+                        <i class="bi bi-box-arrow-up"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-1">المخزون الصادر</h6>
+                <small class="text-muted d-block fs-7">تقرير أذونات الصرف والتوزيع</small>
+            </a>
+        </div>
+
+        <!-- 4. النواقص والحد الأدنى -->
+        <div class="col-md">
+            <a asp-controller="Alerts" asp-action="LowStock" class="report-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-warning-subtle text-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-1">مخزون منخفض</h6>
+                <small class="text-muted d-block fs-7">تنبيهات الأصناف النواقص</small>
+            </a>
+        </div>
+
+        <!-- 5. كشف حركة المخزون العام -->
+        <div class="col-md">
+            <a asp-action="StockMovements" class="report-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-info-subtle text-info">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                </div>
+                <h6 class="fw-bold mb-1">حركة المخزون</h6>
+                <small class="text-muted d-block fs-7">سجل كارت الحركة والتسويات</small>
+            </a>
+        </div>
+    </div>
+
+    <!-- 2️⃣ المؤشرات التشغيلية والـ KPIs الإحصائية المحدثة -->
+    <div class="card card-custom p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="badge bg-light text-dark border fs-6"><i class="bi bi-graph-up-arrow me-1 text-primary"></i> مؤشرات الأداء وحالة المخزون</span>
+            <div class="text-end">
+                <h6 class="fw-bold mb-0">حالة المخزون الإجمالية</h6>
+                <small class="text-muted">مؤشرات الرصيد والحد الأدنى عبر كافة المستودعات</small>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <!-- 1. إجمالي الوحدات -->
+            <div class="col-md-3">
+                <div class="kpi-card d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold text-dark mb-0">@Model.TotalStockQuantity.ToString("N0")</h3>
+                        <small class="text-muted">إجمالي الوحدات بالمخزن</small>
+                    </div>
+                    <div class="icon-box bg-primary-subtle text-primary fs-4">
+                        <i class="bi bi-stack"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. الحد الأدنى المطلوب (بدلاً من إجمالي التكلفة) -->
+            <div class="col-md-3">
+                <div class="kpi-card d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold text-info mb-0">@Model.MinimumRequiredStock.ToString("N0")</h3>
+                        <small class="text-muted">الحد الأدنى المطلوب</small>
+                    </div>
+                    <div class="icon-box bg-info-subtle text-info fs-4">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. أصناف بحد النواقص -->
+            <div class="col-md-3">
+                <div class="kpi-card d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold text-warning mb-0">@Model.LowStockCount</h3>
+                        <small class="text-muted">أصناف بحد النواقص</small>
+                    </div>
+                    <div class="icon-box bg-warning-subtle text-warning fs-4">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. أصناف منتهية -->
+            <div class="col-md-3">
+                <div class="kpi-card d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="fw-bold text-danger mb-0">@Model.OutOfStockCount</h3>
+                        <small class="text-muted">أصناف منتهية بالكامل</small>
+                    </div>
+                    <div class="icon-box bg-danger-subtle text-danger fs-4">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3️⃣ الرسم البياني والتحليلات الجانبية شاملة القيمة المالية والمستودع الأعلى -->
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h6 class="fw-bold mb-3 text-secondary">التحليل والتأثير المالي</h6>
+
+                <!-- التقييم المالي المدمج بدقة -->
+                <div class="alert alert-primary border-0 d-flex align-items-center justify-content-between p-3 mb-3" style="background-color: #eff6ff; color: #1e40af; border-radius: 10px;">
+                    <div>
+                        <span class="small fw-bold d-block">إجمالي القيمة المالية للمخزون</span>
+                        <small class="fs-7 opacity-75">بسعر التكلفة الإجمالية</small>
+                    </div>
+                    <span class="badge bg-primary fs-6">@Model.TotalStockCostValue.ToString("N0") ج.م</span>
+                </div>
+
+                <div class="alert alert-success border-0 d-flex align-items-center justify-content-between p-3 mb-3" style="background-color: #dcfce7; color: #166534; border-radius: 10px;">
+                    <span class="small fw-bold">الأرباح المتوقعة عند البيع الكامل</span>
+                    <span class="badge bg-success fs-6">@Model.ExpectedProfitMargin.ToString("N0") ج.م</span>
+                </div>
+
+                <div class="alert alert-info border-0 d-flex align-items-center justify-content-between p-3" style="background-color: #e0f2fe; color: #075985; border-radius: 10px;">
+                    <span class="small fw-bold">@Model.TopWarehouseName يحتوي على</span>
+                    <span class="badge bg-info text-dark fs-6">@Model.TopWarehouseStock.ToString("N0") وحدة</span>
+                </div>
+            </div>
+
+            <div class="col-md-8 border-start">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold text-secondary">توزيع حالة المخزون المتاح</span>
+                </div>
+                <div style="height: 230px;">
+                    <canvas id="stockStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4️⃣ أزرار سريعة للتقارير المتقدمة -->
+    @* <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card card-custom p-3 d-flex flex-row justify-content-between align-items-center shadow-sm">
+                <div>
+                    <span class="fw-bold d-block text-dark">تقرير التقييم المالي والأرباح</span>
+                    <small class="text-muted">كشف تفصيلي بتكلفة وسعر بيع وهامش ربح كل صنف</small>
+                </div>
+                <a asp-action="FinancialValuation" class="btn btn-sm btn-outline-primary fw-bold px-3"><i class="bi bi-arrows-expand me-1"></i> فتح التقرير</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-custom p-3 d-flex flex-row justify-content-between align-items-center shadow-sm">
+                <div>
+                    <span class="fw-bold d-block text-dark">دفتر كارت الحركة والتسويات الموحد</span>
+                    <small class="text-muted">متابعة دقيقة لكل حركات الإدخال والصرف والنقل والتعديل</small>
+                </div>
+                <a asp-action="StockMovements" class="btn btn-sm btn-outline-primary fw-bold px-3"><i class="bi bi-arrows-expand me-1"></i> عرض الحركة</a>
+            </div>
+        </div>
+    </div> *@
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('stockStatusChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['متوفر بالمخزن', 'مخزون منخفض', 'منتهي بالكامل'],
+                datasets: [{
+                    label: 'عدد الأصناف',
+                    data: [@Model.InStockCount, @Model.LowStockCount, @Model.OutOfStockCount],
+                    backgroundColor: ['#2563eb', '#f59e0b', '#dc2626'],
+                    borderRadius: 6,
+                    barThickness: 32
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    });
+</script>

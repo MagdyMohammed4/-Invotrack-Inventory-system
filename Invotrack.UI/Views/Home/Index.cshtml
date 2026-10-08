@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "الرئيسية - مرحباً بك";
+}
+
+<style>
+    .welcome-banner {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 16px;
+        padding: 40px;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+    }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(37, 99, 235, 0.15);
+            border-radius: 50%;
+            filter: blur(50px);
+        }
+
+    .nav-shortcut-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 24px;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: all 0.25s ease-in-out;
+    }
+
+        .nav-shortcut-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.05);
+            border-color: #3b82f6;
+        }
+
+    .icon-wrapper {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+</style>
+
+<div dir="rtl">
+    <!-- بانر الترحيب الرئيسي -->
+    <div class="welcome-banner mb-5">
+        <div class="row align-items-center position-relative" style="z-index: 1;">
+            <div class="col-lg-8">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
+                    <i class="bi bi-stars me-1"></i> نظام إدارة وتتبع المخزون الذكي
+                </span>
+                <h2 class="fw-bold mb-2">أهلاً بك مجدداً في نظام <span class="text-primary">Invotrack</span> 👋</h2>
+                <p class="text-slate-300 fs-6 mb-0 opacity-75" style="max-width: 600px; line-height: 1.8;">
+                    منصتك المتكاملة لإدارة المستودعات، متابعة حركة الأصناف، وضبط الموردين والعملاء بكفاءة وسلاسة عالية.
+                </p>
+            </div>
+            <div class="col-lg-4 text-center d-none d-lg-block">
+                <i class="bi bi-box-seam text-primary opacity-25" style="font-size: 8rem;"></i>
+            </div>
+        </div>
+    </div>
+
+    
+</div>

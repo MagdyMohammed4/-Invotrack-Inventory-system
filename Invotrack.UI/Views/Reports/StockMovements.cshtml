@@ -1,0 +1,121 @@
+﻿@model IEnumerable<Invotrack.Application.DTOs.StockReportItemDto>
+@{
+    ViewData["Title"] = "تقرير حركة وتدقيق المخزون العام";
+}
+
+<div dir="rtl">
+    <!-- هيدر الشاشة -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-0">
+                <i class="bi bi-journal-text me-2 text-info"></i> سجل دفتر حركة المخزون الشامل (Stock Movements Ledger)
+            </h3>
+            <small class="text-muted">تتبع وتدقيق جميع العمليات (إدخال، صرف، نقل بين المستودعات، وتسويات)</small>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3 shadow-sm">
+            <i class="bi bi-arrow-right me-1"></i> العودة للتقارير
+        </a>
+    </div>
+
+    <!-- فلتر التصفية والبحث المتقدم -->
+    <div class="card card-custom p-3 mb-4 shadow-sm">
+        <form asp-action="StockMovements" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold small">اسم الصنف / المنتج</label>
+                <select name="ProductId" asp-items="ViewBag.Products" class="form-select">
+                    <option value="">-- كافة المنتجات --</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold small">المستودع</label>
+                <select name="WarehouseId" asp-items="ViewBag.Warehouses" class="form-select">
+                    <option value="">-- كافة المستودعات --</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small">من تاريخ</label>
+                <input type="date" name="FromDate" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small">إلى تاريخ</label>
+                <input type="date" name="ToDate" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary fw-bold flex-fill"><i class="bi bi-filter me-1"></i> تصفية</button>
+                <a asp-action="StockMovements" class="btn btn-light border" title="إعادة ضبط"><i class="bi bi-arrow-counterclockwise"></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- جدول سجل الحركة -->
+    <div class="card card-custom p-3 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle text-center mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>رقم المستند</th>
+                        <th>التاريخ والوقت</th>
+                        <th>نوع الحركة</th>
+                        <th>المنتج / الصنف</th>
+                        <th>المستودع المصدر / المستلم</th>
+                        <th>الجهة / الشريك</th>
+                        <th>الكمية</th>
+                        <th>الرصيد بعدها</th>
+                        <th>المسؤول</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            bool isIncoming = item.MovementTypeName.Contains("دخول") || item.MovementTypeName.Contains("وارد");
+                            bool isOutgoing = item.MovementTypeName.Contains("خروج") || item.MovementTypeName.Contains("صادر");
+
+                            <tr>
+                                <td class="fw-bold text-primary">@(string.IsNullOrEmpty(item.DocumentNo) ? $"MOV-{item.Id:D5}" : item.DocumentNo)</td>
+                                <td>@item.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>
+                                    @if (isIncoming)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-arrow-down-left me-1"></i> @item.MovementTypeName</span>
+                                    }
+                                    else if (isOutgoing)
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="bi bi-arrow-up-right me-1"></i> @item.MovementTypeName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-arrow-left-right me-1"></i> @item.MovementTypeName</span>
+                                    }
+                                </td>
+                                <td class="fw-bold text-start">@item.ProductName</td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        @item.SourceWarehouseName
+                                        @if (!string.IsNullOrEmpty(item.DestinationWarehouseName) && item.DestinationWarehouseName != "-")
+                                        {
+                                            <span> ➔ @item.DestinationWarehouseName</span>
+                                        }
+                                    </span>
+                                </td>
+                                <td class="text-secondary">@item.PartnerName</td>
+                                <td class="fw-bold fs-6 @(isIncoming ? "text-success" : isOutgoing ? "text-danger" : "text-dark")">
+                                    @(isIncoming ? "+" : isOutgoing ? "-" : "")@item.Quantity.ToString("N0")
+                                </td>
+                                <td class="fw-bold text-dark"><span class="badge bg-secondary-subtle text-dark border">@item.BalanceAfter.ToString("N0")</span></td>
+                                <td class="small text-muted">@item.CreatedBy</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="text-muted py-4">لا توجد حركات مخزنية مسجلة تجاريًا تنطبق عليها شروط التصفية.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

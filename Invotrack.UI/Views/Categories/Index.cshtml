@@ -1,0 +1,113 @@
+﻿@model IEnumerable<Invotrack.Application.DTOs.CategoryDto>
+@{
+    ViewData["Title"] = "إدارة التصنيفات";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4" dir="rtl">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-tags-fill me-2 text-primary"></i>إدارة تصنيفات المنتجات</h3>
+        <small class="text-muted">إضافة وتعديل التصنيفات المستقلة للمنتجات</small>
+    </div>
+    <button class="btn btn-primary px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+        <i class="bi bi-plus-lg me-1"></i> إضافة تصنيف جديد
+    </button>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" dir="rtl">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card card-custom p-3" dir="rtl">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>كود التصنيف</th>
+                    <th>الاسم بالعربية</th>
+                    <th>English Name</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">CAT-@item.Id.ToString("D3")</td>
+                            <td class="fw-bold text-primary">@item.NameAr</td>
+                            <td class="text-secondary">@item.NameEn</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning me-1" title="تعديل"><i class="bi bi-pencil"></i></a>
+
+                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id" title="حذف">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                               
+                                <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content text-start">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title fw-bold m-0">تأكيد حذف التصنيف</h5>
+                                                <button type="button" class="btn-close btn-close-white ms-0 me-auto" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body text-center py-4">
+                                                <p class="fs-5 mb-2">هل أنت تأكد من إتمام عملية حذف التصنيف؟</p>
+                                                <div class="badge bg-light text-dark fs-6 p-2 border">@item.NameAr | @item.NameEn</div>
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger px-4 fw-bold">نعم، احذف</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">إلغاء</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-muted py-4">لا توجد تصنيفات مسجلة حالياً.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="modal fade" id="createCategoryModal" tabindex="-1" aria-hidden="true" dir="rtl">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold m-0">إضافة تصنيف جديد</h5>
+                <button type="button" class="btn-close btn-close-white ms-0 me-auto" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">الاسم بالعربية</label>
+                        <input name="NameAr" class="form-control" placeholder="مثال: إلكترونيات" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">English Name</label>
+                        <input name="NameEn" class="form-control" placeholder="e.g. Electronics" required />
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">حفظ التصنيف</button>
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

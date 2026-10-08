@@ -1,0 +1,33 @@
+﻿@model Invotrack.Application.DTOs.WarehouseDto
+@{
+    ViewData["Title"] = "إضافة مخزن جديد";
+}
+
+<div class="row justify-content-center" dir="rtl">
+    <div class="col-md-6">
+        <div class="card card-custom p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold text-dark mb-0"><i class="bi bi-building-add me-2 text-primary"></i>إضافة مخزن جديد</h4>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right"></i> عودة</a>
+            </div>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold"></label>
+                    <input asp-for="Name" class="form-control" placeholder="مثال: المخزن الرئيسي - القاهرة" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Location" class="form-label fw-bold"></label>
+                    <input asp-for="Location" class="form-control" placeholder="مثال: المنطقة الصناعية - العبور" required />
+                    <span asp-validation-for="Location" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm"><i class="bi bi-check-lg"></i> حفظ المخزن</button>
+            </form>
+        </div>
+    </div>
+</div>

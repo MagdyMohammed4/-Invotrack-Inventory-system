@@ -1,0 +1,28 @@
+﻿@model Invotrack.Application.DTOs.LoginDto
+@{
+    ViewData["Title"] = "تسجيل الدخول"; Layout = "_Layout";
+}
+
+<div class="row justify-content-center align-items-center min-vh-100" dir="rtl">
+    <div class="col-md-5 col-lg-4">
+        <div class="card card-custom p-4 text-center">
+            <div class="mb-3">
+                <i class="bi bi-box-seam-fill brand-logo fs-1"></i>
+                <h3 class="fw-bold text-dark mt-2">Invotrack</h3>
+                <p class="text-muted small">نظام إدارة المخازن الاحترافي</p>
+            </div>
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="UserName" class="form-control" placeholder="اسم المستخدم" required />
+                    <label>اسم المستخدم</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Password" class="form-control" placeholder="كلمة المرور" required />
+                    <label>كلمة المرور</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm mb-2">دخول النظام</button>
+            </form>
+        </div>
+    </div>
+</div>

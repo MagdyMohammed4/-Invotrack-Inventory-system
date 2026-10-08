@@ -1,0 +1,47 @@
+﻿@model Invotrack.Application.DTOs.StockAdjustmentDto
+@{
+    ViewData["Title"] = "تسوية جردية للمخزون";
+}
+
+<div class="row justify-content-center" dir="rtl">
+    <div class="col-md-7">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark mb-3"><i class="bi bi-sliders me-2 text-info"></i>إجراء تسوية جردية (تسوية الفروق)</h4>
+            <form asp-action="Adjustment" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">اختر الصنف</label>
+                    <select asp-for="ProductId" class="form-select" asp-items="(SelectList)ViewBag.Products">
+                        <option value="">-- اختر الصنف --</option>
+                    </select>
+                    <span asp-validation-for="ProductId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">المستودع</label>
+                    <select asp-for="WarehouseId" class="form-select" asp-items="(SelectList)ViewBag.Warehouses">
+                        <option value="">-- اختر المستودع --</option>
+                    </select>
+                    <span asp-validation-for="WarehouseId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">الرصيد الفعلي الصحيح (من واقع الجرد)</label>
+                    <input asp-for="ActualQuantity" type="number" class="form-control" min="0" required />
+                    <span asp-validation-for="ActualQuantity" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">سبب التسوية الجردية</label>
+                    <input asp-for="Reason" class="form-control" placeholder="مثال: تلف بعض القطع / إعادة جرد سنوي" required />
+                    <span asp-validation-for="Reason" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-info text-white btn-lg w-100 fw-bold shadow-sm">
+                    <i class="bi bi-check-circle me-1"></i> اعتماد التسوية الجردية
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

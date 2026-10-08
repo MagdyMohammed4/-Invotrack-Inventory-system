@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Invotrack.Application.DTOs.ProductDto>
+@{
+    ViewData["Title"] = "تقرير التقييم المالي للمخزون";
+    decimal totalCost = Model?.Sum(p => p.TotalStock * p.CostPrice) ?? 0;
+    decimal totalSale = Model?.Sum(p => p.TotalStock * p.SalePrice) ?? 0;
+    decimal totalProfit = totalSale - totalCost;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4" dir="rtl">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-cash-stack me-2 text-success"></i>تقرير التقييم المالي والربحية المتوقعة</h3>
+        <small class="text-muted">حساب القيمة المالية الإجمالية ورأس المال المستثمر بالمخزن</small>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary px-3 shadow-sm"><i class="bi bi-arrow-right me-1"></i> العودة للتقارير</a>
+</div>
+
+<!-- ملخص الأرقام المالية -->
+<div class="row g-3 mb-4" dir="rtl">
+    <div class="col-md-4">
+        <div class="card card-custom p-3 border-start border-primary border-4 shadow-sm">
+            <small class="text-muted fw-bold">إجمالي رأس المال بسعر التكلفة</small>
+            <h4 class="fw-bold text-primary mb-0">@totalCost.ToString("N2") ج.م</h4>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-custom p-3 border-start border-info border-4 shadow-sm">
+            <small class="text-muted fw-bold">إجمالي قيمة البيع الإجمالية</small>
+            <h4 class="fw-bold text-info mb-0">@totalSale.ToString("N2") ج.م</h4>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-custom p-3 border-start border-success border-4 shadow-sm">
+            <small class="text-muted fw-bold">الأرباح المتوقعة عند التصريف الكامل</small>
+            <h4 class="fw-bold text-success mb-0">@totalProfit.ToString("N2") ج.م</h4>
+        </div>
+    </div>
+</div>
+
+<!-- جدول التفاصيل المالية لكل صنف -->
+<div class="card card-custom p-3" dir="rtl">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>كود الصنف</th>
+                    <th>اسم المنتج</th>
+                    <th>الرصيد المتاح</th>
+                    <th>سعر التكلفة</th>
+                    <th>إجمالي التكلفة</th>
+                    <th>سعر البيع</th>
+                    <th>إجمالي القيمة البيعية</th>
+                    <th>الربح المتوقع</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var itemCost = item.TotalStock * item.CostPrice;
+                        var itemSale = item.TotalStock * item.SalePrice;
+                        var itemProfit = itemSale - itemCost;
+                        <tr>
+                            <td><code>@item.SKU</code></td>
+                            <td class="fw-bold text-start">@item.NameAr</td>
+                            <td><span class="badge bg-light text-dark border">@item.TotalStock @item.Unit</span></td>
+                            <td>@item.CostPrice.ToString("N2") ج.م</td>
+                            <td class="fw-bold text-primary">@itemCost.ToString("N2") ج.م</td>
+                            <td>@item.SalePrice.ToString("N2") ج.م</td>
+                            <td class="fw-bold text-info">@itemSale.ToString("N2") ج.م</td>
+                            <td class="fw-bold text-success">@itemProfit.ToString("N2") ج.م</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-muted py-4">لا توجد بيانات متاحة لحساب التقييم المالي.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model Invotrack.Application.DTOs.CreateUserDto
+@{
+    ViewData["Title"] = "إضافة مستخدم جديد";
+}
+
+<div class="row justify-content-center" dir="rtl">
+    <div class="col-md-6">
+        <div class="card card-custom p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold text-dark mb-0"><i class="bi bi-person-plus-fill me-2 text-primary"></i>إضافة حساب مستخدم جديد</h4>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-right"></i> عودة القائمة</a>
+            </div>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-bold">اسم الموظف بالكامل</label>
+                    <input asp-for="FullName" class="form-control" placeholder="مثال: أحمد محمد" required />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-bold">البريد الإلكتروني (اسم المستخدم)</label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="user@invotrack.com" required />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-bold">كلمة المرور</label>
+                    <input asp-for="Password" type="password" class="form-control" required />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Role" class="form-label fw-bold">الدور / الصلاحية</label>
+                    <select asp-for="Role" class="form-select" asp-items="ViewBag.Roles" required>
+                        <option value="">-- اختر الدور --</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm"><i class="bi bi-check-lg me-1"></i> إنشاء الحساب وتحديد الصلاحية</button>
+            </form>
+        </div>
+    </div>
+</div>

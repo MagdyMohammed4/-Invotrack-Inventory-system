@@ -1,0 +1,52 @@
+﻿@model Invotrack.Application.DTOs.StockInDto
+@{
+    ViewData["Title"] = "إذن إضافة مخزنية";
+}
+
+<div class="row justify-content-center" dir="rtl">
+    <div class="col-md-7">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark mb-3"><i class="bi bi-box-arrow-in-down me-2 text-success"></i>إذن إضافة مخزنية (وارد)</h4>
+            <form asp-action="StockIn" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">اختر الصنف</label>
+                    <select asp-for="ProductId" class="form-select" asp-items="@(new SelectList(ViewBag.Products, "Id", "NameAr"))">
+                        <option value="">-- اختر الصنف --</option>
+                    </select>
+                    <span asp-validation-for="ProductId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">المخزن المستلم</label>
+                    <select asp-for="WarehouseId" class="form-select" asp-items="@(new SelectList(ViewBag.Warehouses, "Id", "Name"))">
+                        <option value="">-- اختر المخزن --</option>
+                    </select>
+                    <span asp-validation-for="WarehouseId" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">الكمية المضافة</label>
+                        <input asp-for="Quantity" type="number" class="form-control" min="1" required />
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">سعر تكلفة الوحدة (ج.م)</label>
+                        <input asp-for="UnitPrice" type="number" step="0.01" class="form-control" required />
+                        <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">اسم المورد / ملاحظات التوريد</label>
+                    <input asp-for="Note" class="form-control" placeholder="مثال: توريد شركة الأمل - فاتورة 502" />
+                    <span asp-validation-for="Note" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm"><i class="bi bi-check-lg me-1"></i> اعتماد وحفظ إذن الإضافة</button>
+            </form>
+        </div>
+    </div>
+</div>

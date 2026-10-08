@@ -1,0 +1,58 @@
+﻿@model Invotrack.Application.DTOs.TransferDto
+@{
+    ViewData["Title"] = "نقل منتجات بين المخازن";
+}
+
+<div class="row justify-content-center" dir="rtl">
+    <div class="col-md-7">
+        <div class="card card-custom p-4 shadow-sm">
+            <h4 class="fw-bold text-dark mb-3">
+                <i class="bi bi-arrow-left-right me-2 text-warning"></i>إذن نقل منتجات بين المخازن
+            </h4>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">اختر المنتج المراد نقله</label>
+                    <select asp-for="ProductId" class="form-select" asp-items="ViewBag.Products" required>
+                        <option value="">-- اختر المنتج --</option>
+                    </select>
+                    <span asp-validation-for="ProductId" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">من مخزن (المصدر)</label>
+                        <select asp-for="SourceWarehouseId" class="form-select" asp-items="ViewBag.Warehouses" required>
+                            <option value="">-- اختر المخزن --</option>
+                        </select>
+                        <span asp-validation-for="SourceWarehouseId" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">إلى مخزن (الوجهة)</label>
+                        <select asp-for="DestinationWarehouseId" class="form-select" asp-items="ViewBag.Warehouses" required>
+                            <option value="">-- اختر المخزن --</option>
+                        </select>
+                        <span asp-validation-for="DestinationWarehouseId" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">الكمية المحولة</label>
+                    <input asp-for="Quantity" type="number" class="form-control" min="1" required />
+                    <span asp-validation-for="Quantity" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">ملاحظات التحويل</label>
+                    <input asp-for="Note" class="form-control" placeholder="مثال: نقل لتغذية الفرع الرئيسي" />
+                </div>
+
+                <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm">
+                    <i class="bi bi-check-lg me-1"></i> اعتماد وحفظ إذن النقل
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

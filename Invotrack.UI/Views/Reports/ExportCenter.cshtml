@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Invotrack.Application.DTOs.ProductDto>
+@{
+    ViewData["Title"] = "مركز تصدير التقارير";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4" dir="rtl">
+    <div>
+        <h3 class="fw-bold text-dark mb-0"><i class="bi bi-file-earmark-arrow-down-fill me-2 text-success"></i>مركز تصدير البيانات والتقارير</h3>
+        <small class="text-muted">تصدير كامل لكشوف المخزون إلى ملفات Excel/CSV وجاهزة للطباعة PDF</small>
+    </div>
+    <a asp-controller="Reports" asp-action="Index" class="btn btn-outline-secondary px-3 shadow-sm"><i class="bi bi-arrow-right me-1"></i> العودة للتقارير</a>
+</div>
+
+<div class="row g-4 mb-4" dir="rtl">
+    <!-- تصدير CSV / Excel -->
+    <div class="col-md-6">
+        <div class="card card-custom p-4 shadow-sm border-start border-success border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold text-dark mb-1"><i class="bi bi-file-earmark-excel me-2 text-success"></i>تصدير كشف المنتجات (CSV / Excel)</h5>
+                    <small class="text-muted">تنزيل كامل بيانات الأرصدة والأسعار والتصنيفات ملف جدول بيانات</small>
+                </div>
+                <!-- 🟢 تم تصحيح الـ asp-controller ليصحب Reports -->
+                <a asp-controller="Reports" asp-action="ExportProductsCsv" class="btn btn-success fw-bold px-4 shadow-sm">
+                    <i class="bi bi-download me-1"></i> تحميل CSV
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- طباعة تقرير PDF -->
+    <div class="col-md-6">
+        <div class="card card-custom p-4 shadow-sm border-start border-danger border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold text-dark mb-1"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>طباعة تقرير تقييم المخزون (PDF)</h5>
+                    <small class="text-muted">توليد تقرير تفصيلي إلكتروني بأسعار التكلفة الإجمالية جاهز للطباعة</small>
+                </div>
+                <!-- 🟢 تم تصحيح الـ asp-controller ليصبح Reports -->
+                <a asp-controller="Reports" asp-action="ExportProductsPdf" target="_blank" class="btn btn-danger fw-bold px-4 shadow-sm">
+                    <i class="bi bi-printer me-1"></i> معاينة وتوليد PDF
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- معاينة جدول المنتجات الحالية المتاحة للتصدير -->
+<div class="card card-custom p-3" dir="rtl">
+    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-table me-2"></i>معاينة البيانات المتاحة للتصدير حالياً</h5>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>كود الصنف (SKU)</th>
+                    <th>اسم المنتج</th>
+                    <th>القسم / التصنيف</th>
+                    <th>سعر التكلفة</th>
+                    <th>سعر البيع</th>
+                    <th>إجمالي الرصيد</th>
+                    <th>إجمالي القيمة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        var totalValue = item.TotalStock * item.CostPrice;
+                        <tr>
+                            <td><code>@item.SKU</code></td>
+                            <td class="fw-bold text-start">@item.NameAr</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary">@item.CategoryName</span></td>
+                            <td>@item.CostPrice.ToString("N2") ج.م</td>
+                            <td>@item.SalePrice.ToString("N2") ج.م</td>
+                            <td><span class="fw-bold text-primary">@item.TotalStock @item.Unit</span></td>
+                            <td class="fw-bold text-success">@totalValue.ToString("N2") ج.م</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-muted py-4">لا توجد منتجات مسجلة في النظام.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
